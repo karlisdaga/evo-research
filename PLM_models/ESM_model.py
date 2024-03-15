@@ -248,7 +248,6 @@ class ESM():
         if len(sequences) != len(starts) or len(sequences) != len(ends):
             raise ValueError("Lengths of sequences, starts, and ends must be equal.")
 
-    # Assuming best_sequences is a list of sequences
     # Create a DataFrame to store the results
         df_result = pd.DataFrame(columns=['Original_sequence', 'Evo_likelihood_original', 'Best_sequence', 'Pseudo_likelihood_best'])
 
