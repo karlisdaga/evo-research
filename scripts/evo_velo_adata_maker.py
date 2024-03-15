@@ -28,7 +28,7 @@ metadata_cols = [col for col in embeddings_df.columns if col not in embedding_co
 # Create an AnnData object
 adata = anndata.AnnData(embeddings_df[embedding_cols])
 
-# Add sequence and metadata information to .obs slot of AnnData object
+# Add sequence and metadata information to .obs slot of AnnData object (for now VDJ gene sequences)
 adata.obs['seq'] = sequences
 adata.obs['VDJ_cgene'] = vdj_cgene
 adata.obs['sample_id'] = sample_ids
