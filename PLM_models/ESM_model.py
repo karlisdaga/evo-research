@@ -112,7 +112,7 @@ class ESM():
             data.append(("protein{}".format(i),sequence))
         probs = []
         count = 0
-        #One sequence at a time
+
         for sequence,_ in zip(data,tqdm(range(len(data)))):
             _, _, batch_tokens = batch_converter([sequence])
             batch_tokens = batch_tokens.to("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -125,7 +125,6 @@ class ESM():
             df = pd.DataFrame(prob, columns = self.alphabet_.all_toks)
             df = df.iloc[:,4:-4]
             df = df.loc[:, df.columns.isin(["U","Z","O","B","X"]) == False]
-            #removing CLS and SEP
             df = df.iloc[1:-1,:]
             df = df.reindex(sorted(df.columns), axis=1)
             probs.append(df)
@@ -142,13 +141,13 @@ class ESM():
 #Make an empty Dataframe of probs_concatenated
         probs_concatenated = pd.DataFrame()
 
-    # Iterate over each sequence and its corresponding DataFrame
+    #Iterate over each sequence
         for i, df in enumerate(probs):
         # Add a blank row as a separator between sequences
             separator_row = pd.DataFrame(index=[f"Sequence {i + 1}"], columns=df.columns)
             probs_concatenated = pd.concat([probs_concatenated, separator_row, df])
 
-    # Reset the index of the concatenated DataFrame
+    #Reset the index of the concatenated DataFrame
         probs_concatenated.reset_index(drop=True, inplace=True)
         prob_by_column = {}
         for column in probs_concatenated.columns:
@@ -157,9 +156,9 @@ class ESM():
 # Concatenate the probabilities for each amino acid into a single DataFrame
         prob_by_column_concatenated = pd.concat(prob_by_column, axis=1)
 
-
+#Convert to csv
         probs_concatenated.to_csv("/hpc/dla_lti/kdagakrumins/anaconda3/PLM_anamay/probabilities/probabilities_pseudo_ESM.csv",index=False)
-
+#Make an empty list of best sequence
         best_sequences = []
 
         for i, df in enumerate(probs):
@@ -174,12 +173,11 @@ class ESM():
                 best_sequence += best_amino_acid
             best_sequences.append(best_sequence)
     # Append the best sequence for the current sequence to the list
-# Print or use best_sequences as needed
         print(best_sequences)
 
         print("Done with predictions")
         print("Done with predictions")
-        print(type(probs_concatenated))
+    #Make best sequences as class variable for process_sequences method
         self.best_sequences = best_sequences
 
 
@@ -229,29 +227,25 @@ class ESM():
         return df
 
     def process_sequences(self, sequences: list, starts,ends):
-    # Calculate evolutionary likelihoods for each sequence
+    #calculate evolutionary likelihoods for each sequence
         likelihoods = self.calc_pseudo_likelihood_sequence(sequences, starts, ends)
 
-    # Get the list of best sequences
+    #get the list of best sequences
         best_sequences = self.best_sequences
         best_starts = [0] * len(best_sequences)
         best_ends = [len(seq) for seq in best_sequences]
-   
-    # Update starts and ends with the values from best sequences
         starts = best_starts
         ends = best_ends
 
-    # Calculate pseudo likelihoods for each best sequence
+#pseud_likelihood for best sequence
         pseudo_likelihoods = self.calc_pseudo_likelihood_sequence(best_sequences, starts, ends)
         print(sequences,likelihoods,best_sequences,pseudo_likelihoods)
-    # Ensure all arrays have the same length
         if len(sequences) != len(starts) or len(sequences) != len(ends):
             raise ValueError("Lengths of sequences, starts, and ends must be equal.")
 
-    # Create a DataFrame to store the results
         df_result = pd.DataFrame(columns=['Original_sequence', 'Evo_likelihood_original', 'Best_sequence', 'Pseudo_likelihood_best'])
 
-    # Use enumerate and zip to iterate over sequences, likelihoods, best_sequences, and pseudo_likelihoods together
+
         for i, (seq, likelihood, best_seq, pseudo_likelihood) in enumerate(zip(sequences, likelihoods, best_sequences, pseudo_likelihoods)):
             df_result.loc[i] = [seq, likelihood, best_seq, pseudo_likelihood]
 
