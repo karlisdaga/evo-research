@@ -4,7 +4,7 @@ import os
 import sys
 import argparse
 
-sys.path.append("/../../PLM_models/")
+sys.path.append("/hpc/dla_lti/kdagakrumins/anaconda3/PLM_anamay/src/")
 
 from ablang_model import Ablang
 from antiberty_model import Antiberty
@@ -26,12 +26,12 @@ dataset = args.dataset
 mode = args.mode
 num_mutations = args.num_mutations
 
-init_list = [ESM]
+init_list = [ESM] #Specify the models you would like to use
 suffixes = ["ESM"]
 
 if mode == "general":
  
-    repertoire_file  = pd.read_csv(args.file_path, delimiter=";") #Please specify delimiter, sequence must be full_sequence
+    repertoire_file  = pd.read_csv(args.file_path, delimiter=";") #Please specify delimiter and sequence must be full_sequence in the data
 
     repertoire_file_folder = os.path.dirname(args.file_path)
     save_path = os.path.join(repertoire_file_folder,"embeddings")
@@ -42,10 +42,7 @@ if mode == "general":
     starts = [0]*repertoire_file.shape[0]
     ends = repertoire_file["full_sequence"].apply(len)
 
-    for i,model in enumerate(init_list): ### the class method "fit_transform" calculates the embedding of each sequence
-     
-        # if os.path.exists(os.path.join(save_path,f"embeddings_{suffixes[i]}.csv")):
-        #     continue
+    for i,model in enumerate(init_list): # the class method "fit_transform" calculates the embedding of each sequence
 
         if suffixes[i] == "ablang":
             model = model(chain = "heavy")
@@ -55,7 +52,6 @@ if mode == "general":
             per_pos = model.generate_probability_matrix_csv(sequences)
             best_evo = model.process_sequences(sequences=list(repertoire_file["full_sequence"]),starts=list(starts),ends=list(ends))
             best_evo.to_csv(os.path.join(save_path,f"best_sequence_evo_sapiens.csv"), index = False)
-#           pll = calc_pseudo_likelihood_sequence(sequences=list(repertoire_file["full_sequence"]), starts=list(starts), ends=list(ends))
         else:
             model = model()
 
