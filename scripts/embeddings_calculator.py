@@ -31,7 +31,7 @@ suffixes = ["ESM"]
 
 if mode == "general":
  
-    repertoire_file  = pd.read_csv(args.file_path, delimiter=";")
+    repertoire_file  = pd.read_csv(args.file_path, delimiter=";") #Please specify delimiter, sequence must be full_sequence
 
     repertoire_file_folder = os.path.dirname(args.file_path)
     save_path = os.path.join(repertoire_file_folder,"embeddings")
