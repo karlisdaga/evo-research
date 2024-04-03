@@ -126,24 +126,19 @@ class Sapiens():
     # Calculate evolutionary likelihoods for each sequence
         likelihoods = self.calc_pseudo_likelihood_sequence(sequences, starts, ends)
 
-    # Get the list of best sequences
         best_sequences = self.best_sequences
         best_starts = [0] * len(best_sequences)
         best_ends = [len(seq) for seq in best_sequences]
    
-    # Update starts and ends with the values from best sequences
         starts = best_starts
         ends = best_ends
 
-    # Calculate pseudo likelihoods for each best sequence
         pseudo_likelihoods = self.calc_pseudo_likelihood_sequence(best_sequences, starts, ends)
         print(sequences,likelihoods,best_sequences,pseudo_likelihoods)
     # Ensure all arrays have the same length
         if len(sequences) != len(starts) or len(sequences) != len(ends):
             raise ValueError("Lengths of sequences, starts, and ends must be equal.")
 
-    # Assuming best_sequences is a list of sequences
-    # Create a DataFrame to store the results
         df_result = pd.DataFrame(columns=['Original_sequence', 'Evo_likelihood_original', 'Best_sequence', 'Pseudo_likelihood_best'])
 
     # Use enumerate and zip to iterate over sequences, likelihoods, best_sequences, and pseudo_likelihoods together
