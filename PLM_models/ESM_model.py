@@ -162,12 +162,7 @@ class ESM():
                 best_amino_acid = str(best_amino_acid)
                 best_sequence += best_amino_acid
             best_sequences.append(best_sequence)
-
-        print(best_sequences)
-
         print("Done with predictions")
-        print("Done with predictions")
-        print(type(probs_concatenated))
         self.best_sequences = best_sequences
         self.df_probabilities = prob_by_column_concatenated
 
@@ -233,7 +228,7 @@ class ESM():
         print(sequences,likelihoods,best_sequences,pseudo_likelihoods)
 
         if len(sequences) != len(starts) or len(sequences) != len(ends):
-            raise ValueError("Lengths of sequences, starts, and ends must be equal.
+            raise ValueError("Lengths of sequences, starts, and ends must be equal.)
 
         df_result = pd.DataFrame(columns=['Original_sequence', 'Evo_likelihood_original', 'Best_sequence', 'Pseudo_likelihood_best'])
 
