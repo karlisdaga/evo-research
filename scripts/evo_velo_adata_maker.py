@@ -56,17 +56,8 @@ evo.tl.velocity_embedding(adata, basis = basis)
 output_file = "processed_data.h5ad" 
 adata.write(output_file)
 print(f"Processed data saved to {output_file}")
-print(adata)
-print(adata.obs.dtypes)
-print(adata.obsm["velocity_umap"])
-results_folder = "/hpc/dla_lti/kdagakrumins/anaconda3/PLM_anamay/results_folder"
-
-print(adata.obs.dtypes)
-print(adata.obs["SHM_count"].isnull().sum())
-print(adata.obs["SHM_count"])
-is_cat_shm_count = pd.api.types.is_categorical_dtype(adata.obs['SHM_count'])
-print(f"Column 'SHM_count' is categorical: {is_cat_shm_count}")
-# Plot your data using the color mapping (jgene or SHM_count)
+results_folder = "/../results_folder/"
+# Plot your data using the color mapping (jgene or SHM_count), make sure data is categorical
 color="SHM_count"
 ax = evo.pl.velocity_embedding_stream(adata, color=color, legend_loc="right margin", show=False)
 save_path = f"evo_velo_embedding_stream_{color}_{model}.png"
