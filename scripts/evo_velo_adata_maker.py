@@ -14,12 +14,10 @@ import numpy as np
 import os
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--dataset_file', help='Path to the dataset file containing embeddings')
+parser.add_argument("-m", "--model", help="Choose a model: ESM, ablang, protbert, sapiens")
 args = parser.parse_args()
-
 dataset_file = args.dataset_file
-model_name = "esm1_t6_43M_UR50S"
-
-model = FBModel(name=model_name, repr_layer=[-1], random_init=False)
+model = args.model
 
 embeddings_df = pd.read_csv(dataset_file)
 embeddings_df = embeddings_df.dropna(subset=['full_sequence'])
@@ -46,14 +44,16 @@ adata.obs["SHM_count"] = shm_count
 evo.pp.neighbors(adata)
 sc.tl.umap(adata)
 basis = "umap"
-evo.tl.velocity_graph(adata)
-
-#Embed network and velocities in two-dimensions
-evo.tl.velocity_embedding(adata, basis = basis)
+if model  == "ESM":
+    evo.tl.velocity_graph(adata)
+else:
+    evo.tl.velocity_graph(adata, model_name = model)
 if 'model' in adata.uns:
     del adata.uns['model']
-
-output_file = "evovelocity.h5ad" 
+#Embed network and velocities in two-dimensions
+evo.tl.velocity_embedding(adata, basis = basis)
+#Save the processed AnnData object to a file
+output_file = "processed_data.h5ad" 
 adata.write(output_file)
 print(f"Processed data saved to {output_file}")
 print(adata)
@@ -69,5 +69,5 @@ print(f"Column 'SHM_count' is categorical: {is_cat_shm_count}")
 # Plot your data using the color mapping (jgene or SHM_count)
 color="SHM_count"
 ax = evo.pl.velocity_embedding_stream(adata, color=color, legend_loc="right margin", show=False)
-save_path = f"evo_velo_embedding_stream_{color}.png"
+save_path = f"evo_velo_embedding_stream_{color}_{model}.png"
 plt.savefig(save_path, bbox_inches="tight")
