@@ -13,6 +13,8 @@ To create embeddings, calculate likelihoods and get n mutations you need to run 
 
 To create evolocities:
 
+-Import first the evolocity package
+
 -f Specify the file path to your EMBEDDINGS that are created beforehand
 
 -m Specify the model you would like to use for the evo-velocity mapping, currently there are ESM, ablang, protbert, sapiens. It is recommended to use the same model for the same embeddings.
