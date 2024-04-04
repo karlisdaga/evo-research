@@ -7,9 +7,6 @@ import anndata
 import evolocity as evo
 import scanpy as sc
 import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-from matplotlib.colors import Normalize
-from matplotlib import cm
 import numpy as np
 import os
 parser = argparse.ArgumentParser()
