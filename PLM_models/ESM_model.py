@@ -130,10 +130,6 @@ class ESM():
             count += 1
 
         likelihoods = get_pseudo_likelihood(probs, sequences)
-        pkl.dump([probs, likelihoods], open("/hpc/dla_lti/kdagakrumins/anaconda3/PLM_anamay/probabilities/probabilities_pseudo.pkl", "wb"))
-        print("done with predictions")
-        with open("/hpc/dla_lti/kdagakrumins/anaconda3/PLM_anamay/probabilities/probabilities_pseudo.pkl", "rb") as f:
-            data = pkl.load(f)
         probs_concatenated = pd.DataFrame()
 
         for i, df in enumerate(probs):
@@ -148,8 +144,15 @@ class ESM():
 
 #Concatenate the probabilities for each amino acid into a single DataFrame
         prob_by_column_concatenated = pd.concat(prob_by_column, axis=1)
+        output_dir = "probabilities"
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+            print(f"Directory '{output_dir}' created.")
 
-        probs_concatenated.to_csv("/hpc/dla_lti/kdagakrumins/anaconda3/PLM_anamay/probabilities/probabilities_pseudo_ESM.csv",index=False)
+    # Save concatenated probabilities to CSV
+        csv_path = os.path.join(output_dir, "probabilities_pseudo_ESM.csv")
+        probs_concatenated.to_csv(csv_path, index=False)
+        print(f"Saved probabilities to {csv_path}")
 
         best_sequences = []
 
