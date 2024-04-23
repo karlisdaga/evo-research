@@ -25,7 +25,7 @@ num_mutations = args.num_mutations
 
 init_list = [ESM, Sapiens, Ablang, ProtBert]
 suffixes = ["ESM", "sapiens", "ablang", "protbert"]
-#Make sure your sequence is named as full_sequence in the dataset, otherwise change it in the code 
+#Make sure your sequence is named as full_sequence in the dataset, otherwise change it in the code or in the dataset
 repertoire_file  = pd.read_csv(args.file_path, delimiter=",")
 
 repertoire_file_folder = os.path.dirname(args.file_path)
