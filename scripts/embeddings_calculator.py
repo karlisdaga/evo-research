@@ -4,14 +4,12 @@ import os
 import sys
 import argparse
 
-sys.path.append("/../PLM_models/")
+sys.path.append("../PLM_models/")
 
 from ablang_model import Ablang
-from antiberty_model import Antiberty
 from ESM_model import ESM
 from sapiens_model import Sapiens
 from protbert import ProtBert
-from ESM_prob_model import ESM_prob
 parser = argparse.ArgumentParser( )
 
 parser.add_argument('-d','--dataset',required=False)   
