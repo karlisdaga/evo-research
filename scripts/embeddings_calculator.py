@@ -20,7 +20,6 @@ parser.add_argument('--num_mutations', type=int)
 args = parser.parse_args()
 
 dataset = args.dataset
-mode = args.mode
 num_mutations = args.num_mutations
 
 init_list = [ESM, Sapiens, Ablang, ProtBert]
