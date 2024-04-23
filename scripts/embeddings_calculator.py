@@ -34,7 +34,7 @@ if mode == "general":
     repertoire_file  = pd.read_csv(args.file_path, delimiter=",")
 
     repertoire_file_folder = os.path.dirname(args.file_path)
-    save_path = os.path.join(repertoire_file_folder,"embeddings")
+    save_path = os.path.join(repertoire_file_folder,"embedding_data")
 
     if not os.path.exists(save_path):
         os.mkdir(save_path)
@@ -55,8 +55,8 @@ if mode == "general":
             per_pos = model.generate_probability_matrix_csv(sequences)
             best_evo = model.process_sequences(sequences=list(repertoire_file["full_sequence"]),starts=list(starts),ends=list(ends))
             best_evo.to_csv(os.path.join(save_path,f"best_sequence_evo_sapiens.csv"), index = False)
-            n_mut_sequences = model.mutate_sequences(num_mutations)
-            n_mut_sequences.to_csv(os.path.join(save_path,f"n_{num_mutations}_mut_sequences_sapiens.csv"), index = False)
+ #           n_mut_sequences = model.mutate_sequences(num_mutations)   ### n_mut_sequences gives an iterated mutated sequence based on n amount of mutations(has to run all the previous functions)
+ #           n_mut_sequences.to_csv(os.path.join(save_path,f"n_{num_mutations}_mut_sequences_sapiens.csv"), index = False)
         else:
             model = model()
 
@@ -67,5 +67,5 @@ if mode == "general":
             per_pos = model.calc_evo_likelihood_matrix_per_position(sequences=list(repertoire_file["full_sequence"]))
             best_evo = model.process_sequences(sequences=list(repertoire_file["full_sequence"]),starts=list(starts),ends=list(ends))
             best_evo.to_csv(os.path.join(save_path,f"best_sequence_evo_{suffixes[i]}.csv"), index = False)
-            n_mut_sequences = model.mutate_sequences(num_mutations)
-            n_mut_sequences.to_csv(os.path.join(save_path,f"n_{num_mutations}_mut_sequences_{suffixes[i]}.csv"), index = False)
+#            n_mut_sequences = model.mutate_sequences(num_mutations)
+#            n_mut_sequences.to_csv(os.path.join(save_path,f"n_{num_mutations}_mut_sequences_{suffixes[i]}.csv"), index = False)
