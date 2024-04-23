@@ -117,7 +117,14 @@ class Sapiens():
                 separator_row = pd.DataFrame(index=[f"Sequence {i + 1} separator"], columns=per_pos.columns)
                 prob_matrix.append(separator_row)
         combined_matrix = pd.concat(prob_matrix)
-        combined_matrix.to_csv("/hpc/dla_lti/kdagakrumins/anaconda3/PLM_anamay/probabilities/probabilities_pseudo_sapiens.csv", index=False)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+            print(f"Directory '{output_dir}' created.")
+
+    # Save concatenated probabilities to CSV
+        csv_path = os.path.join(output_dir, "probabilities_pseudo_sapiens.csv")
+        combined_matrix.to_csv(csv_path, index=False)
+        print(f"Saved probabilities to {csv_path}")
         print(best_sequences)
         print("This is saved")
         self.best_sequences = best_sequences
