@@ -235,7 +235,6 @@ class ESM():
 
         df_result = pd.DataFrame(columns=['Original_sequence', 'Evo_likelihood_original', 'Best_sequence', 'Pseudo_likelihood_best'])
 
-    # Use enumerate and zip to iterate over sequences, likelihoods, best_sequences, and pseudo_likelihoods together
         for i, (seq, likelihood, best_seq, pseudo_likelihood) in enumerate(zip(sequences, likelihoods, best_sequences, pseudo_likelihoods)):
             df_result.loc[i] = [seq, likelihood, best_seq, pseudo_likelihood]
 
