@@ -145,7 +145,9 @@ class ProtBert():
             best_sequences.append(best_sequence)
             
         self.best_sequences = best_sequences
-    def calc_pseudo_likelihood_sequence(self, sequences: list, starts, ends):
+    def calc_pseudo_likelihood_sequence(self, sequences:list,starts, ends):
+        
+       	likelihoods_info = []
         pll_all_sequences = []
         self.mask_model = self.mask_model.to(self.device)
 
@@ -157,7 +159,7 @@ class ProtBert():
                 seq_tokens = seq_tokens.to(self.device)
                 logits = self.mask_model(**seq_tokens).logits[0].cpu().detach().numpy()
                 prob = scipy.special.softmax(logits,axis = 1)
-                df = pd.DataFrame(prob, columns = self.tokenizer.vocab)
+                df = pd.DataFrame(prob, columns = self.tokenizer.convert_ids_to_tokens(range(0,33)))
                 df = df.iloc[1:-1,:]
 
                 per_position_ll = []
@@ -166,12 +168,14 @@ class ProtBert():
                     ll_i = np.log(df.iloc[i,:][aa_i])
                     per_position_ll.append(ll_i)
                 
-                pll_seq = np.average(per_position_ll)
+               	pll_seq = np.average(per_position_ll)
                 pll_all_sequences.append(pll_seq)
+                likelihoods_info.append({"Sequence": sequence, "Likelihood": pll_seq})
             except:
-                pll_all_sequences.append(None)
+                likelihoods_info.append({"Sequence": sequence, "Likelihood": None})
 
-        return pll_all_sequences
+        result_df = pd.DataFrame(likelihoods_info)
+        return result_df    
 
     def calc_probability_matrix(self, sequence:str):
         amino_acids = list(sequence)
@@ -185,12 +189,6 @@ class ProtBert():
 
         return df
 
-    def process_sequences(self, sequences: list, starts,ends):
-    # Calculate evolutionary likelihoods for each sequence
-            likelihoods = self.calc_pseudo_likelihood_sequence(sequences, starts, ends)
-            sequences_processed = sequences
-            result_df = pd.DataFrame({"Sequence": sequences_processed, "Likelihood": likelihoods})
-            return result_df
     def best_sequences(self,sequences:list,starts,ends):
         
         best_sequences = self.best_sequences
