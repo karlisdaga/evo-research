@@ -76,34 +76,28 @@ class Sapiens():
             output.columns = [f"dim_{i}" for i in range(output.shape[1])]
             return output.reset_index(drop=True)
 
-    def calc_pseudo_likelihood_sequence(self, sequences:list,starts, ends):
-        
-       	likelihoods_info = []
+    def calc_pseudo_likelihood_sequence(self, sequences:list,starts,ends):
         pll_all_sequences = []
-        self.mask_model = self.mask_model.to(self.device)
-
+        likelihoods_info = []
         for j,sequence in enumerate(tqdm(sequences)):
-            try: 
+            try:
                 amino_acids = list(sequence)
-                seq_tokens = ' '.join(amino_acids)
-                seq_tokens = self.tokenizer(seq_tokens, return_tensors='pt')
-                seq_tokens = seq_tokens.to(self.device)
-                logits = self.mask_model(**seq_tokens).logits[0].cpu().detach().numpy()
-                prob = scipy.special.softmax(logits,axis = 1)
-                df = pd.DataFrame(prob, columns = self.tokenizer.convert_ids_to_tokens(range(0,33)))
-                df = df.iloc[1:-1,:]
+                df = pd.DataFrame(sapiens.predict_scores(sequence, chain_type=self.chain))
 
                 per_position_ll = []
-                for i in range(starts[j],ends[j]):
+                for i in range(starts[j], ends[j]):
                     aa_i = amino_acids[i]
+                    if aa_i == "-" or aa_i == "*":
+                        continue
                     ll_i = np.log(df.iloc[i,:][aa_i])
                     per_position_ll.append(ll_i)
                 
                	pll_seq = np.average(per_position_ll)
                 pll_all_sequences.append(pll_seq)
-                likelihoods_info.append({"Sequence": sequence, "Likelihood": pll_seq})
+                likelihoods_info.append({"Sequence":sequence, "Likelihood":pll_seq})
             except:
                 likelihoods_info.append({"Sequence": sequence, "Likelihood": None})
+
 
         result_df = pd.DataFrame(likelihoods_info)
         return result_df    
