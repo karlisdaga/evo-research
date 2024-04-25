@@ -49,7 +49,7 @@ ends = repertoire_file["full_sequence"].apply(len)
             sequences = repertoire_file["LC_CDR3"]
             per_pos = model.generate_probability_matrix_csv(sequences)
             evo_lhood = model.calc_pseudo_likelihood_sequence(sequences=list(repertoire_file["LC_CDR3"]),starts=list(starts),ends=list(ends))
-            evo_lhood.to_csv(os.path.join(save_path,f"best_sequence_evo_sapiens.csv"), index = False)
+            evo_lhood.to_csv(os.path.join(save_path,f"evo_likelihood_sapiens.csv"), index = False)
           #  n_mut_sequences = model.mutate_sequences(num_mutations)
           #  n_mut_sequences.to_csv(os.path.join(save_path,f"n_{num_mutations}_mut_sequences_sapiens.csv"), index = False)
         else:
@@ -61,7 +61,7 @@ ends = repertoire_file["full_sequence"].apply(len)
         if suffixes[i] == "ablang" or suffixes[i] == "ESM" or suffixes[i] == "protbert":
             per_pos = model.calc_evo_likelihood_matrix_per_position(sequences=list(repertoire_file["LC_CDR3"]))
             evo_lhood = model.calc_pseudo_likelihood_sequence(sequences=list(repertoire_file["LC_CDR3"]),starts=list(starts),ends=list(ends))
-            evo_lhood.to_csv(os.path.join(save_path,f"best_sequence_evo_{suffixes[i]}.csv"), index = False)
+            evo_lhood.to_csv(os.path.join(save_path,f"evo_likelihood_{suffixes[i]}.csv"), index = False)
 #            n_mut_sequences = model.mutate_sequences(num_mutations)
 #            n_mut_sequences.to_csv(os.path.join(save_path,f"n_{num_mutations}_mut_sequences_{suffixes[i]}.csv"), index = False)
 #            delta_likelihood = model.delta_likelihood(sequences=list(repertoire_file["Mutated_sequence"]),starts=list(starts),ends=list(ends),num_mutations=num_mutations)
