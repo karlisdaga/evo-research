@@ -216,6 +216,12 @@ class ESM():
 
     def process_sequences(self, sequences: list, starts,ends):
     # Calculate evolutionary likelihoods for each sequence
+            likelihoods = self.calc_pseudo_likelihood_sequence(sequences, starts, ends)
+            sequences_processed = sequences
+            result_df = pd.DataFrame({"Sequence": sequences_processed, "Likelihood": likelihoods})
+            return result_df
+    def best_sequences(self,sequences:list,starts,ends):
+    # Calculate evolutionary likelihoods for each sequence
         likelihoods = self.calc_pseudo_likelihood_sequence(sequences, starts, ends)
 
         best_sequences = self.best_sequences
