@@ -76,27 +76,37 @@ class Sapiens():
             output.columns = [f"dim_{i}" for i in range(output.shape[1])]
             return output.reset_index(drop=True)
 
-    def calc_pseudo_likelihood_sequence(self, sequences:list,starts,ends):
+    def calc_pseudo_likelihood_sequence(self, sequences:list,starts, ends):
+        
+       	likelihoods_info = []
         pll_all_sequences = []
+        self.mask_model = self.mask_model.to(self.device)
+
         for j,sequence in enumerate(tqdm(sequences)):
-            try:
+            try: 
                 amino_acids = list(sequence)
-                df = pd.DataFrame(sapiens.predict_scores(sequence, chain_type=self.chain))
+                seq_tokens = ' '.join(amino_acids)
+                seq_tokens = self.tokenizer(seq_tokens, return_tensors='pt')
+                seq_tokens = seq_tokens.to(self.device)
+                logits = self.mask_model(**seq_tokens).logits[0].cpu().detach().numpy()
+                prob = scipy.special.softmax(logits,axis = 1)
+                df = pd.DataFrame(prob, columns = self.tokenizer.convert_ids_to_tokens(range(0,33)))
+                df = df.iloc[1:-1,:]
 
                 per_position_ll = []
-                for i in range(starts[j], ends[j]):
+                for i in range(starts[j],ends[j]):
                     aa_i = amino_acids[i]
-                    if aa_i == "-" or aa_i == "*":
-                        continue
                     ll_i = np.log(df.iloc[i,:][aa_i])
                     per_position_ll.append(ll_i)
                 
-                pll_seq = np.average(per_position_ll)
+               	pll_seq = np.average(per_position_ll)
                 pll_all_sequences.append(pll_seq)
+                likelihoods_info.append({"Sequence": sequence, "Likelihood": pll_seq})
             except:
-                pll_all_sequences.append(None)
-        print(pll_all_sequences)
-        return pll_all_sequences
+                likelihoods_info.append({"Sequence": sequence, "Likelihood": None})
+
+        result_df = pd.DataFrame(likelihoods_info)
+        return result_df    
     
     def calc_probability_matrix(self, sequence:str):
         df = pd.DataFrame(sapiens.predict_scores(sequence, chain_type=self.chain))
@@ -128,13 +138,6 @@ class Sapiens():
         print(best_sequences)
         print("This is saved")
         self.best_sequences = best_sequences
-
-    def process_sequences(self, sequences: list, starts,ends):
-    # Calculate evolutionary likelihoods for each sequence
-            likelihoods = self.calc_pseudo_likelihood_sequence(sequences, starts, ends)
-            sequences_processed = sequences
-            result_df = pd.DataFrame({"Sequence": sequences_processed, "Likelihood": likelihoods})
-            return result_df
         
     def best_sequences(self,sequences:list,starts,ends):
         best_sequences = self.best_sequences
