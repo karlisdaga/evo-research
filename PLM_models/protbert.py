@@ -187,8 +187,12 @@ class ProtBert():
 
     def process_sequences(self, sequences: list, starts,ends):
     # Calculate evolutionary likelihoods for each sequence
-        likelihoods = self.calc_pseudo_likelihood_sequence(sequences, starts, ends)
-
+            likelihoods = self.calc_pseudo_likelihood_sequence(sequences, starts, ends)
+            sequences_processed = sequences
+            result_df = pd.DataFrame({"Sequence": sequences_processed, "Likelihood": likelihoods})
+            return result_df
+    def best_sequences(self,sequences:list,starts,ends):
+        
         best_sequences = self.best_sequences
         best_starts = [0] * len(best_sequences)
         best_ends = [len(seq) for seq in best_sequences]
