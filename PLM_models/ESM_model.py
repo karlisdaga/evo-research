@@ -113,7 +113,6 @@ class ESM():
             data.append(("protein{}".format(i),sequence))
         probs = []
         count = 0
-        #One sequence at a time
         for sequence,_ in zip(data,tqdm(range(len(data)))):
             _, _, batch_tokens = batch_converter([sequence])
             batch_tokens = batch_tokens.to("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -122,7 +121,6 @@ class ESM():
             logits = out["logits"][0].cpu().detach().numpy()
             #Turn them into probabilties 
             prob = scipy.special.softmax(logits,axis = 1)
-            #Preprocessing probabilities, removing CLS and SEP tokens and removing probabilities of Special aminoacids and tokens of the model.
             df = pd.DataFrame(prob, columns = self.alphabet_.all_toks)
             df = df.iloc[:,4:-4]
             df = df.loc[:, df.columns.isin(["U","Z","O","B","X"]) == False]
@@ -136,7 +134,6 @@ class ESM():
         likelihoods = get_pseudo_likelihood(probs, sequences)
         probs_concatenated = pd.DataFrame()
 
-    # Iterate over each sequence and its corresponding DataFrame
         for i, df in enumerate(probs):
         # Add a blank row as a separator between sequences
             separator_row = pd.DataFrame(index=[f"Sequence {i + 1}"], columns=df.columns)
@@ -148,12 +145,8 @@ class ESM():
         for column in probs_concatenated.columns:
            prob_by_column[column] = probs_concatenated[column]
 
-# Concatenate the probabilities for each amino acid into a single DataFrame
         prob_by_column_concatenated = pd.concat(prob_by_column, axis=1)
-
-#This works:
-        # Transpose the DataFrame so that each row represents a position and each column represents an amino acid
-        # Reset the index so that the index represents the position
+        
         output_dir = "probabilities"
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -166,12 +159,9 @@ class ESM():
         best_sequences = []
 
         for i, df in enumerate(probs):
-    # Transpose the DataFrame so that each row represents a position and each column represents an amino acid
-    
-    # Iterate over each position in the transposed DataFrame
+
             best_sequence = ""
             for _, row in df.iterrows():
-        # Find the amino acid with the highest probability
                 best_amino_acid = row.idxmax()
         
         # Append the best amino acid to the best sequence
