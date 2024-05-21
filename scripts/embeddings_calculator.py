@@ -4,7 +4,7 @@ import os
 import sys
 import argparse
 
-sys.path.append("../PLM_models/")
+sys.path.append("../PLM_models")
 
 from ablang_model import Ablang
 from ESM_model import ESM
