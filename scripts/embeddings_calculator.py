@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser( )
 
 parser.add_argument('-d','--dataset',required=False)   
 parser.add_argument('--file_path', required=False)
-parser.add_argument("--column", type = string)
+parser.add_argument("--column")
 
 
 args = parser.parse_args()
