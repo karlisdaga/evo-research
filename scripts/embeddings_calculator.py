@@ -4,7 +4,7 @@ import os
 import sys
 import argparse
 
-sys.path.append("/hpc/dla_lti/kdagakrumins/anaconda3/PLM_anamay/src/")
+sys.path.append("../PLM_models")
 
 from ablang_model import Ablang
 from ESM_model import ESM
