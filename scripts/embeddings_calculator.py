@@ -34,7 +34,7 @@ if mode == "general":
     repertoire_file = repertoire_file.dropna(subset=[column])
     repertoire_file[column] = repertoire_file[column].str.replace("_", "")
     repertoire_file_folder = os.path.dirname(args.file_path)
-    save_path = os.path.join(repertoire_file_folder,"Variant_tree2_LC_test")
+    save_path = os.path.join(repertoire_file_folder,"data")
 
     if not os.path.exists(save_path):
         os.mkdir(save_path)
@@ -43,9 +43,7 @@ if mode == "general":
     ends = repertoire_file[column].apply(len)
 
     for i,model in enumerate(init_list): ### the class method "fit_transform" calculates the embedding of each sequence
-     
-        # if os.path.exists(os.path.join(save_path,f"embeddings_{suffixes[i]}.csv")):
-        #     continue
+
 
         if suffixes[i] == "ablang":
             model = model(chain = "light")
