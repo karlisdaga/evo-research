@@ -6,7 +6,7 @@ import pickle as pkl
 import os
 from tqdm import tqdm
 
-sys.path.append(os.getcwd()+"/src")
+sys.path.append(os.getcwd()+"/PLM_models")
 from utils import get_pseudo_likelihood
 class Sapiens():
 
