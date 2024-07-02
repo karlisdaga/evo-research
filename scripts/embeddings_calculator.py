@@ -13,7 +13,6 @@ from protbert import ProtBert
 parser = argparse.ArgumentParser()
 
 parser.add_argument('-d','--dataset',required=False)   
-parser.add_argument('--mode')
 parser.add_argument('--file_path', required=False)
 parser.add_argument('--num_mutations', type=int)
 parser.add_argument("--column")
@@ -21,7 +20,6 @@ parser.add_argument("--column")
 args = parser.parse_args()
 
 dataset = args.dataset
-mode = args.mode
 num_mutations = args.num_mutations
 column = args.column
 
